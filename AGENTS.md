@@ -16,7 +16,7 @@ Guidelines for AI agents and contributors working on this repository.
 
 This textbook covers the following subjects:
 
-1. **Calculus I–III** — Calculus I is complete
+1. **Calculus I–III** — Calculus I is in progress
 2. **Statistics**
 3. **Statics**
 4. **Discrete Mathematics**
@@ -93,3 +93,12 @@ All code in this repository must adhere to the following standards:
 4. **Linting:** All Python code must be validated with:
    - Pylint (resolve all errors and warnings)
    - Pylance (resolve all reported issues)
+   - Stylistic warnings (e.g., `too-many-arguments`) should be addressed unless there is a specific readability use case. When a stylistic issue is found, the author should weigh in before suppressing the warning.
+
+### Graph Generation
+
+All mathematical visualizations use Plotly for graph generation:
+
+- **Library:** Plotly with Kaleido for static image export
+- **Output Format:** PNG images at 2x scale for high resolution
+- **Style:** White background, consistent grid styling, clear legends

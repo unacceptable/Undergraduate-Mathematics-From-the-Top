@@ -6,8 +6,9 @@ Creates a visualization for the solid of revolution concept.
 
 import os
 
-import matplotlib.pyplot as plt
 import numpy as np
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
 
 def main() -> None:
@@ -19,60 +20,93 @@ def main() -> None:
     images_dir = os.path.join(script_dir, '..', 'images')
 
     # Create figure with two subplots - 2D and 3D views
-    fig = plt.figure(figsize=(14, 6))
-
-    # Left subplot: 2D view showing the function and radius
-    ax1 = fig.add_subplot(1, 2, 1)
+    fig = make_subplots(
+        rows=1, cols=2,
+        specs=[[{'type': 'xy'}, {'type': 'scene'}]],
+        subplot_titles=(
+            'Cross-section: y = √x revolved around x-axis',
+            'Solid of Revolution: V = 128π'
+        ),
+        horizontal_spacing=0.1
+    )
 
     # Generate x values from 0 to 16
     x = np.linspace(0, 16, 400)
     y = np.sqrt(x)
 
-    # Plot the function
-    ax1.plot(x, y, 'b-', linewidth=2, label=r'$f(x) = \sqrt{x}$')
+    # Left subplot: 2D view showing the function and radius
+    # Plot the function (upper curve)
+    fig.add_trace(go.Scatter(
+        x=x,
+        y=y,
+        mode='lines',
+        name=r'$f(x) = \sqrt{x}$',
+        line={'color': 'blue', 'width': 2}
+    ), row=1, col=1)
 
-    # Mirror the function below x-axis to show revolution shape
-    ax1.plot(x, -y, 'b-', linewidth=2)
+    # Mirror the function below x-axis
+    fig.add_trace(go.Scatter(
+        x=x,
+        y=-y,
+        mode='lines',
+        name='Mirror',
+        line={'color': 'blue', 'width': 2},
+        showlegend=False
+    ), row=1, col=1)
 
     # Fill the area to show the cross-section
-    ax1.fill_between(x, -y, y, alpha=0.3, color='blue')
+    fig.add_trace(go.Scatter(
+        x=np.concatenate([x, x[::-1]]),
+        y=np.concatenate([y, -y[::-1]]),
+        fill='toself',
+        fillcolor='rgba(0, 0, 255, 0.2)',
+        line={'color': 'rgba(0, 0, 255, 0)'},
+        name='Cross-section',
+        showlegend=False
+    ), row=1, col=1)
 
     # Show a sample radius at x = 9
     sample_x = 9
     sample_y = np.sqrt(sample_x)
-    ax1.plot([sample_x, sample_x], [0, sample_y], 'r-', linewidth=2)
-    ax1.plot([sample_x, sample_x], [0, -sample_y], 'r--', linewidth=2)
-    ax1.annotate(
-        r'$r = f(x) = \sqrt{x}$',
-        (sample_x, sample_y / 2),
-        textcoords="offset points",
-        xytext=(15, 0),
-        fontsize=11,
-        color='red'
+    fig.add_trace(go.Scatter(
+        x=[sample_x, sample_x],
+        y=[0, sample_y],
+        mode='lines',
+        name='Radius',
+        line={'color': 'red', 'width': 2}
+    ), row=1, col=1)
+    fig.add_trace(go.Scatter(
+        x=[sample_x, sample_x],
+        y=[0, -sample_y],
+        mode='lines',
+        line={'color': 'red', 'width': 2, 'dash': 'dash'},
+        showlegend=False
+    ), row=1, col=1)
+
+    # Mark the points
+    fig.add_trace(go.Scatter(
+        x=[sample_x, sample_x],
+        y=[sample_y, -sample_y],
+        mode='markers',
+        marker={'color': 'red', 'size': 8},
+        showlegend=False
+    ), row=1, col=1)
+
+    # Add radius annotation
+    fig.add_annotation(
+        x=sample_x + 1,
+        y=sample_y / 2,
+        text='r = f(x) = √x',
+        showarrow=False,
+        font={'size': 11, 'color': 'red'},
+        xref='x1',
+        yref='y1'
     )
 
-    # Mark the point
-    ax1.plot(sample_x, sample_y, 'ro', markersize=8)
-    ax1.plot(sample_x, -sample_y, 'ro', markersize=8)
-
-    # Set axis limits and labels
-    ax1.set_xlim(-1, 18)
-    ax1.set_ylim(-5, 5)
-    ax1.set_xlabel('x', fontsize=12)
-    ax1.set_ylabel('y', fontsize=12)
-    ax1.set_title(r'Cross-section: $y = \sqrt{x}$ revolved around x-axis', fontsize=12)
-    ax1.axhline(y=0, color='k', linewidth=0.5)
-    ax1.axvline(x=0, color='k', linewidth=0.5)
-    ax1.grid(True, linestyle='--', alpha=0.7)
-    ax1.legend(loc='upper left')
-    ax1.set_aspect('equal')
-
     # Right subplot: 3D view of the solid of revolution
-    ax2 = fig.add_subplot(1, 2, 2, projection='3d')
-
     # Create the surface of revolution
-    x_3d = np.linspace(0.01, 16, 100)
-    theta = np.linspace(0, 2 * np.pi, 100)
+    x_3d = np.linspace(0.01, 16, 50)
+    theta = np.linspace(0, 2 * np.pi, 50)
     x_mesh, theta_mesh = np.meshgrid(x_3d, theta)
 
     # r = sqrt(x) is the radius at each x
@@ -83,25 +117,62 @@ def main() -> None:
     z_mesh = r_mesh * np.sin(theta_mesh)
 
     # Plot the surface
-    ax2.plot_surface(
-        x_mesh, y_mesh, z_mesh,
-        alpha=0.7,
-        cmap='Blues',
-        edgecolor='none'
+    fig.add_trace(go.Surface(
+        x=x_mesh,
+        y=y_mesh,
+        z=z_mesh,
+        colorscale='Blues',
+        opacity=0.8,
+        showscale=False,
+        name='Solid'
+    ), row=1, col=2)
+
+    # Update 2D subplot layout
+    fig.update_xaxes(
+        title_text='x',
+        range=[-1, 18],
+        zeroline=True,
+        zerolinewidth=1,
+        zerolinecolor='black',
+        showgrid=True,
+        gridwidth=1,
+        gridcolor='rgba(128, 128, 128, 0.3)',
+        row=1, col=1
+    )
+    fig.update_yaxes(
+        title_text='y',
+        range=[-5, 5],
+        zeroline=True,
+        zerolinewidth=1,
+        zerolinecolor='black',
+        showgrid=True,
+        gridwidth=1,
+        gridcolor='rgba(128, 128, 128, 0.3)',
+        scaleanchor='x1',
+        scaleratio=1,
+        row=1, col=1
     )
 
-    # Set labels
-    ax2.set_xlabel('x', fontsize=10)
-    ax2.set_ylabel('y', fontsize=10)
-    ax2.set_zlabel('z', fontsize=10)
-    ax2.set_title(r'Solid of Revolution: $V = 128\pi$', fontsize=12)
+    # Update 3D scene layout
+    fig.update_scenes(
+        xaxis_title='x',
+        yaxis_title='y',
+        zaxis_title='z',
+        aspectmode='data'
+    )
 
-    plt.tight_layout()
+    # Update overall layout
+    fig.update_layout(
+        showlegend=True,
+        legend={'x': 0.02, 'y': 0.98},
+        plot_bgcolor='white',
+        width=1400,
+        height=600
+    )
 
     # Save the figure
     output_path = os.path.join(images_dir, 'revolution_sqrt_x.png')
-    plt.savefig(output_path, dpi=150, bbox_inches='tight')
-    plt.close()
+    fig.write_image(output_path, scale=2)
 
     print(f"Graph saved to '{output_path}'")
 

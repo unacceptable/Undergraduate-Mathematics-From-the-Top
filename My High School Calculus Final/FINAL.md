@@ -2,11 +2,11 @@
 
 ## Overview
 
-This is a close recration of my calculus final.  I am not changing the wording too much, but if I find a missing comma or a math mistake here or there I will correct that.  Some of the wording is inpercice, and some steps were skipped, but I am trying to keep it as verbatim as possible.
+This is a close recration of my calculus final.  I am not changing the wording too much, but if I find a missing comma or a math mistake here or there I will correct that.  Some of the wording is imprecise, and some steps were skipped, but I am trying to keep it as verbatim as possible.
 
 ### Note for my classmates & teacher
 
-5 other people may have the original document and may note some key differences.  I am keeping this as true to the original work as possible while using better graphing technology via python.  There are probably better graphing solutions out there, but I am using what I am currently most familiar with that's easy to check into software version control.
+5 other people may have the original document and may note some key differences.  I am keeping this as true to the original work as possible while using better graphing technology via python.
 
 ## Final Content
 
@@ -39,11 +39,6 @@ or as:
 $$
 \frac{y_1 - y_2}{x_1 - x_2}
 $$
-
-> **Note from the future:** I like final minus initial more here as that makes more sense that the notation that I have here.
-> $$
-> \frac{y_f - y_i}{x_f - x_i}
-> $$
 
 Now if:
 
@@ -330,6 +325,7 @@ c = 79
 $$
 
 Then $v(t)$ equals:
+
 $$
 v(t) = -9.8t + 79
 $$
@@ -611,6 +607,7 @@ $$
 $$
 
 When we "plug and chug":
+
 $$
 0 = 4\pi r - \frac{2000}{r^2}
 $$
