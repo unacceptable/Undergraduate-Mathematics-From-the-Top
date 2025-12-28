@@ -830,19 +830,19 @@ $$
 We plug in:
 
 $$
-- x \cos(x) - \int (-\cos(x)) \, dx
+-x \cos(x) - \int (-\cos(x)) \, dx
 $$
 
 And simplify by pulling the negative sign out in front of the integral:
 
 $$
-- x \cos(x) + \int \cos(x) \, dx
+-x \cos(x) + \int \cos(x) \, dx
 $$
 
 Take the integral of the cosine:
 
 $$
-- x \cos(x) + \sin(x)
+-x \cos(x) + \sin(x)
 $$
 
 Technically we found our answer in the previous step, but in the interest of making the problem easier to read we can switch around values to get:
